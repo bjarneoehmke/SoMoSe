@@ -16,7 +16,8 @@ static const char *const TAG = "somose";
 
     // command read value
     if (this->write(&command, 1) != i2c::ERROR_OK) {
-      ESP_LOGE(TAG, "Write failed!");
+
+      ESP_LOGE(TAG, "0x64 Write failed!");
       this->status_set_warning();
       return;
     }
@@ -35,7 +36,7 @@ static const char *const TAG = "somose";
     command = 0x75;
 
     if (this->write(&command, 1) != i2c::ERROR_OK) { // command read value
-      ESP_LOGE(TAG, "Write failed!");
+      ESP_LOGE(TAG, "0x75 Write failed!");
       this->status_set_warning();
       return;
     }
@@ -51,7 +52,7 @@ static const char *const TAG = "somose";
     ESP_LOGD(TAG, "Read moisture max value %d (%d, %d).", value[0] * 256 + value[1], value[0], value[1]);
     this->moisture_max_ =  value[0] * 256 + value[1];
 
-	delay(1);
+	  delay(1);
 
 
 	  // Disable power saving mode (command 0x4C + data 0x00)
@@ -102,7 +103,7 @@ static const char *const TAG = "somose";
 		uint8_t dump;
 
 		if (this->write(&command, 1) != i2c::ERROR_OK) { // command read value
-      ESP_LOGE(TAG, "Write failed!");
+      ESP_LOGE(TAG, "0x76 Write failed!");
       this->status_set_warning();
       return 0;
     }
@@ -130,7 +131,7 @@ static const char *const TAG = "somose";
 		uint8_t value[2];
 
 		if (this->write(&command, 1) != i2c::ERROR_OK) { // command read value
-      ESP_LOGE(TAG, "Write failed!");
+      ESP_LOGE(TAG, "0x72 Write failed!");
       this->status_set_warning();
       return 0;
     }
@@ -153,7 +154,7 @@ static const char *const TAG = "somose";
 		uint8_t value = 0;
 
 		if (this->write(&command, 1) != i2c::ERROR_OK) { // command read value
-      ESP_LOGE(TAG, "Write failed!");
+      ESP_LOGE(TAG, "0x74 Write failed!");
       this->status_set_warning();
       return 0;
     }
