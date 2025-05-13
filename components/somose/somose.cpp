@@ -52,25 +52,18 @@ static const char *const TAG = "somose";
     this->moisture_max_ =  value[0] * 256 + value[1];
 
 	delay(1);
-	      // read current power saving mode
-    command = 0x20;
-    uint8_t power_mode = 0;
 
-    if (this->write(&command, 1) != i2c::ERROR_OK) {
-      ESP_LOGE(TAG, "Write to read power mode failed!");
+
+	  // Disable power saving mode (command 0x4C + data 0x00)
+    uint8_t power_save_disable[2] = {0x4C, 0x00};
+
+    if (this->write(power_save_disable, 2) != i2c::ERROR_OK) {
+      ESP_LOGE(TAG, "Disabling power saving mode failed!");
       this->status_set_warning();
       return;
+    } else {
+      ESP_LOGD(TAG, "Power saving mode disabled (sent 0x4C 0x00).");
     }
-
-    delay(1);
-
-    if (this->read(&power_mode, 1) != i2c::ERROR_OK) {
-      ESP_LOGE(TAG, "Read power mode failed!");
-      this->status_set_warning();
-      return;
-    }
-
-    ESP_LOGD(TAG, "Power saving mode currently: %s", (power_mode == 0x01 ? "DISABLED" : "ENABLED"));
 
 
     // get status
@@ -180,6 +173,17 @@ static const char *const TAG = "somose";
 
     ESP_LOGD(TAG, "SOMOSE::update");
 
+	  // Disable power saving mode (command 0x4C + data 0x00)
+    uint8_t power_save_disable[2] = {0x4C, 0x00};
+
+    if (this->write(power_save_disable, 2) != i2c::ERROR_OK) {
+      ESP_LOGE(TAG, "Disabling power saving mode failed!");
+      this->status_set_warning();
+      return;
+    } else {
+      ESP_LOGD(TAG, "Power saving mode disabled (sent 0x4C 0x00).");
+    }
+	  
     float temperature = getTemperatureValue_() * 1.0;
     float moisture = getSensorRAWValue_()*100.0/8000;
 
