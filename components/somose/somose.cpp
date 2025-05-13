@@ -12,15 +12,16 @@ static const char *const TAG = "somose";
     ESP_LOGCONFIG(TAG, "Setting up SOMOSE...");
   
     uint8_t command = 0x64;
-		uint8_t value[2];
+    uint8_t value[2];
 
-		if (this->write(&command, 1) != i2c::ERROR_OK) { // command read value
+    // command read value
+    if (this->write(&command, 1) != i2c::ERROR_OK) {
       ESP_LOGE(TAG, "Write failed!");
       this->status_set_warning();
       return;
     }
 
-   	delay(1);                   // maybe some delay is required
+    delay(1);                   // maybe some delay is required
 
     if (this->read(value, 2) != i2c::ERROR_OK) {
       ESP_LOGE(TAG, "Read Value failed!");
@@ -29,17 +30,17 @@ static const char *const TAG = "somose";
     }
 
     ESP_LOGD(TAG, "Read moisture min value %d (%d, %d).", value[0] * 256 + value[1], value[0], value[1]);
-		this->moisture_min_ = value[0] * 256 + value[1];
+    this->moisture_min_ = value[0] * 256 + value[1];
 
     command = 0x75;
 
-		if (this->write(&command, 1) != i2c::ERROR_OK) { // command read value
+    if (this->write(&command, 1) != i2c::ERROR_OK) { // command read value
       ESP_LOGE(TAG, "Write failed!");
       this->status_set_warning();
       return;
     }
 
-   	delay(1);                   // maybe some delay is required
+    delay(1);                   // maybe some delay is required
 
     if (this->read(value, 2) != i2c::ERROR_OK) {
       ESP_LOGE(TAG, "Read Value failed!");
@@ -48,7 +49,29 @@ static const char *const TAG = "somose";
     }
 
     ESP_LOGD(TAG, "Read moisture max value %d (%d, %d).", value[0] * 256 + value[1], value[0], value[1]);
-		this->moisture_max_ =  value[0] * 256 + value[1];
+    this->moisture_max_ =  value[0] * 256 + value[1];
+
+	delay(1);
+	      // read current power saving mode
+    command = 0x20;
+    uint8_t power_mode = 0;
+
+    if (this->write(&command, 1) != i2c::ERROR_OK) {
+      ESP_LOGE(TAG, "Write to read power mode failed!");
+      this->status_set_warning();
+      return;
+    }
+
+    delay(1);
+
+    if (this->read(&power_mode, 1) != i2c::ERROR_OK) {
+      ESP_LOGE(TAG, "Read power mode failed!");
+      this->status_set_warning();
+      return;
+    }
+
+    ESP_LOGD(TAG, "Power saving mode currently: %s", (power_mode == 0x01 ? "DISABLED" : "ENABLED"));
+
 
     // get status
     /* uint8_t status = 0;
