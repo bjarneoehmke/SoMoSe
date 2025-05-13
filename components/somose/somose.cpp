@@ -184,7 +184,9 @@ static const char *const TAG = "somose";
     } else {
       ESP_LOGD(TAG, "Power saving mode disabled (sent 0x4C 0x00).");
     }
-	  
+
+    delay(1);
+
     float temperature = getTemperatureValue_() * 1.0;
     float moisture = getSensorRAWValue_()*100.0/8000;
 
